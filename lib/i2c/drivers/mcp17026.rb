@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # I2C IO-Expander driver 
 # for the MCP23017 16-bit IO-Expander.
 #

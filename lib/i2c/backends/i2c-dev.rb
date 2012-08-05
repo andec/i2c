@@ -1,4 +1,4 @@
-# -*- coding: undecided -*-
+# -*- coding: utf-8 -*-
 # I2C - Linux i2c-dev backend. 
 #
 # Copyright (c) 2012 Christoph Anderegg <christoph@christoph-anderegg.ch>

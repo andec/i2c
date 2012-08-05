@@ -1,4 +1,4 @@
-# -*- coding: undecided -*-
+# -*- coding: utf-8 -*-
 # Entry point to the I2C library.
 #
 # Essentially this requires the correct backend
