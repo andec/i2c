@@ -33,10 +33,20 @@ module I2C
       # MCP17026 on one I2C-bus.
       #
       # device: I2C-device file (usually /dev/i2c-0).
+      #         Or an intantiated io class that supports
+      #         the necessary operations (#read, #write
+      #         and #ioctl).
       # address: Device address on the bus.
       def initialize(device, address)
-        @device = nil
-        @device = ::I2C.create(device)
+        if device.kind_of?(String)
+          @device = ::I2C.create(device)
+        else
+          [ :read, :write ].each do |m|
+            raise IncompatibleDeviceException, 
+            "Missing #{m} method in device object." unless device.respond_to?(m)
+          end
+          @device = device
+        end
         @address = address
         
         @dir_a = 0xFF # Direction is input initially 
@@ -49,51 +59,49 @@ module I2C
       end  
       
       def mode?(pin)
-        @dir_a, @dir_b = @device.read(@address, 2, IODIRA)
+        @dir_a, @dir_b = @device.read(@address, 2, IODIRA).unpack("CC")
         dir = @dir_a
         if 8 <= pin
           dir = @dir_b
+          pin -= 8
         end
-        return (@dir_b >> pin) & 0x01
+#        puts "Dir: #{dir}; Pin #{pin}; Res: #{(dir >> pin) & 0x01}."  
+        return (dir >> pin) & 0x01
       end
       
       def mode(pin, pin_mode)
         raise ArgumentError, "Pin not 0-15" unless (0..16).include?(pin)
         raise ArgumentError, 'invalid value' unless [0,1].include?(pin_mode)
         if 8 <= pin
-          puts "ModeB"
           @dir_b = set_bit_value(@dir_b, (pin-8), pin_mode)
         else
           @dir_a = set_bit_value(@dir_a, pin, pin_mode)
-          puts "ModeA"
         end
         @device.write(@address, IODIRA, @dir_a, @dir_b)
-        #@device.write(@address, IODIRA, @dir_a)
       end
       
       def []=(pin, value)
         raise ArgumentError, "Pin not 0-15" unless (0..15).include?(pin)
         raise ArgumentError, 'invalid value' unless [0,1].include?(value)
         if 8 <= pin
-          puts "DataB"
           @data_b = set_bit_value(@data_b, (pin-8), value)
         else
-          puts "DataA"
           @data_a = set_bit_value(@data_a, pin, value)
         end
-        puts "#{@device}: addr: 0x#{"%X" % @address} DAta: 0b#{"%B" % @data_a}"
+#        puts "#{@device}: addr: 0x#{"%X" % @address} DAta: 0b#{"%B" % @data_a}"
         @device.write(@address, GPIOA, @data_a, @data_b)
-        #@device.write(@address, GPIOA, @data_a)
       end
       alias :write :[]= 
         
       def [](pin)
         raise ArgumentError, "Pin not 0-15." unless (0..15).include?(pin)
         @data_a, @data_b = @device.read(@address, 2, GPIOA).unpack("CC")
+        data = @data_a
         if 8 <= pin
-          return ((@data_b & (0x01 << (pin-8))) != 0x00)
+          data  = @data_b;
+          pin -= 8
         end
-        return ((@data_a & (0x01 << pin)) != 0x00)
+        return (data >> pin) & 0x01        
       end
       alias :read :[]
       
