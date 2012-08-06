@@ -12,9 +12,9 @@ module I2C
     I2C_SLAVE = 0x0703
 
     def self.create(device_path)
-      raise FileNotFound, "Device #{device_path} not found." unless File.exists?(device_path)
+      raise Errno::ENOENT, "Device #{device_path} not found." unless File.exists?(device_path)
       @instances ||= Hash.new
-      @instances[device_path] = Master.new(device_path) unless @instances.has_key?(device_path)
+      @instances[device_path] = Dev.new(device_path) unless @instances.has_key?(device_path)
       @instances[device_path]
     end
 
@@ -25,11 +25,13 @@ module I2C
     # For Fixnum there is a convinient function to_short which transforms
     # the number to a string this way: 12345.to_short == [12345].pack("s")
     def write(address, *params)
-      data = ""
+      data = String.new
+      data.force_encoding("US-ASCII")
       params.each do |value|
         data << value
       end
-      # on parport_i2c
+      data.each_byte { |b| puts b }
+      puts "#{@device}: addr: 0x#{"%X" % address} Data: #{data} (#{data.encoding}) No Params: #{params.size}"
       @device.ioctl(I2C_SLAVE, address)
       @device.syswrite(data)
     end
@@ -39,13 +41,13 @@ module I2C
     # String#unpack afterwards
     def read(address, size, *params)
       ret = ""
-      data = ""
-      params.each do |value|
-        data << value
-      end
-      # on parport_i2c
-      @device.ioctl(I2C_SLAVE, address)
-      @device.syswrite(data)
+#      data = ""
+#      params.each do |value|
+#        data << value
+#      end
+#      @device.ioctl(I2C_SLAVE, address)
+#      @device.syswrite(data)
+      write(address, params)
       ret = @device.sysread(size)
       return ret
     end

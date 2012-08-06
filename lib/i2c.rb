@@ -8,7 +8,7 @@
 
 require 'i2c/i2c.rb'
 require 'i2c/backends/i2c-dev.rb'
-require 'i2c/drivers/mcp1726.rb'
+require 'i2c/drivers/mcp17026.rb'
 
 
 

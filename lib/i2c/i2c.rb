@@ -27,7 +27,7 @@ module I2C
   #                  of course system specific. For the
   #                  Linux i2c-dev driver this is the
   #                  device file (e.g. /dev/i2c-0").
-  def create(bus_descriptor)
+  def self.create(bus_descriptor)
     I2C::Dev.create(bus_descriptor)
   end
 end

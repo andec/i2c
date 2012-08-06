@@ -15,15 +15,15 @@ require 'i2c/i2c.rb'
 # Constants for mode()
 INPUT = 1
 OUTPUT = 0
-# PWM_OUTPUT = 2 # Unsupported
 
-# Constants for digitalWrite()
+# Constants for write()
 HIGH = 1
 LOW = 0
-
+      
 module I2C
   module Drivers
     class MCP17026
+      # Registers
       IODIRA = 0x00
       IODIRB = 0x01
       GPIOA = 0x12
@@ -36,22 +36,20 @@ module I2C
       # address: Device address on the bus.
       def initialize(device, address)
         @device = nil
-        @device = ::I2C::Master.create(device)
-        @device.address = address
+        @device = ::I2C.create(device)
+        @address = address
         
         @dir_a = 0xFF # Direction is input initially 
         @dir_b = 0xFF # Direction is input initially
-        #@device.write(IODIRA, @dir_a, @dir_b)
-        #@device.write(IODIRB, @dir_b)
+        @device.write(@address, IODIRA, @dir_a, @dir_b)
         
         @data_a = 0xFF # Initial data
         @data_b = 0xFF # Initial data
-        @data_a = @device.read(1, GPIOA)
-        @data_a, @data_b = @device.read(2, GPIOA).unpack("CC")   
+        @data_a, @data_b = @device.read(@address, 2, GPIOA).unpack("CC")   
       end  
       
       def mode?(pin)
-        #@dir_a, @dir_b = @device.read(2, IODIRA)
+        @dir_a, @dir_b = @device.read(@address, 2, IODIRA)
         dir = @dir_a
         if 8 <= pin
           dir = @dir_b
@@ -63,28 +61,35 @@ module I2C
         raise ArgumentError, "Pin not 0-15" unless (0..16).include?(pin)
         raise ArgumentError, 'invalid value' unless [0,1].include?(pin_mode)
         if 8 <= pin
+          puts "ModeB"
           @dir_b = set_bit_value(@dir_b, (pin-8), pin_mode)
         else
           @dir_a = set_bit_value(@dir_a, pin, pin_mode)
+          puts "ModeA"
         end
-        @device.write(IODIRA, @dir_a, @dir_b)
+        @device.write(@address, IODIRA, @dir_a, @dir_b)
+        #@device.write(@address, IODIRA, @dir_a)
       end
       
       def []=(pin, value)
         raise ArgumentError, "Pin not 0-15" unless (0..15).include?(pin)
         raise ArgumentError, 'invalid value' unless [0,1].include?(value)
         if 8 <= pin
+          puts "DataB"
           @data_b = set_bit_value(@data_b, (pin-8), value)
         else
+          puts "DataA"
           @data_a = set_bit_value(@data_a, pin, value)
         end
-        @device.write(GPIOA, @data_a, @data_b)
+        puts "#{@device}: addr: 0x#{"%X" % @address} DAta: 0b#{"%B" % @data_a}"
+        @device.write(@address, GPIOA, @data_a, @data_b)
+        #@device.write(@address, GPIOA, @data_a)
       end
       alias :write :[]= 
         
       def [](pin)
         raise ArgumentError, "Pin not 0-15." unless (0..15).include?(pin)
-        @data_a, @data_b = @device.read(2, GPIOA).unpack("CC")
+        @data_a, @data_b = @device.read(@address, 2, GPIOA).unpack("CC")
         if 8 <= pin
           return ((@data_b & (0x01 << (pin-8))) != 0x00)
         end
@@ -94,18 +99,18 @@ module I2C
       
       private
       def set_bit_value(byte, bit, value)
-          mask = 0x00
+        mask = 0x00
         mask = (0x01 << bit)
         case value
         when 0
-          byte = byte & ((~mask) & 0xFF)
+          byte = (byte & ((~mask) & 0xFF)) & 0xFF
         when 1
-          byte = byte |  mask
+          byte = (byte |  mask) & 0xFF
         else
           raise ArgumentError, "Bit not 0-7."
         end
-        #      puts "Byte: (0x#{"%X" % byte}) 0b#{"%B" % byte}; " +
-        #        "Mask: 0b#{"%B" % mask}; Bit: #{bit}; Value: #{value}"
+#        puts "Byte: (0x#{"%X" % byte}) 0b#{"%B" % byte}; " +
+#          "Mask: 0b#{"%B" % mask}; Bit: #{bit}; Value: #{value}"
         byte
       end
     end
