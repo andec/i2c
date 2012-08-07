@@ -13,6 +13,15 @@ The library is split into two parts:
  - Drivers for I2C-enabled ICs. (Only for the Microchip MCP23017 16-bit
    IO-Expander).
 
+== Installation
+
+To use the i2c-dev backend it is necessary to load the "i2c-dev" linux
+kernel module. This is not done automatically even if the module for the
+underlying I2C-hardware is. 
+Also the device file (usually /dev/i2c-0) must be user accessible. A working
+(at least on a RaspberryPi running Raspbian) udev rule file is available
+(rules/88-i2c.rules).
+
 == Acknowledgements
 
 The low-level IO (mainly in i2c-dev.rb) was extracted from Ruby-I2C 
