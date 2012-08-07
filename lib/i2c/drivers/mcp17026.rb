@@ -65,7 +65,6 @@ module I2C
           dir = @dir_b
           pin -= 8
         end
-#        puts "Dir: #{dir}; Pin #{pin}; Res: #{(dir >> pin) & 0x01}."  
         return (dir >> pin) & 0x01
       end
       
@@ -88,7 +87,6 @@ module I2C
         else
           @data_a = set_bit_value(@data_a, pin, value)
         end
-#        puts "#{@device}: addr: 0x#{"%X" % @address} DAta: 0b#{"%B" % @data_a}"
         @device.write(@address, GPIOA, @data_a, @data_b)
       end
       alias :write :[]= 

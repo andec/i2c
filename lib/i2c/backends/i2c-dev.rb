@@ -30,8 +30,6 @@ module I2C
       params.each do |value|
         data << value
       end
-      data.each_byte { |b| puts b }
-      puts "#{@device}: addr: 0x#{"%X" % address} Data: #{data} (#{data.encoding}) No Params: #{params.size}"
       @device.ioctl(I2C_SLAVE, address)
       @device.syswrite(data)
     end
@@ -41,13 +39,7 @@ module I2C
     # String#unpack afterwards
     def read(address, size, *params)
       ret = ""
-#      data = ""
-#      params.each do |value|
-#        data << value
-#      end
-#      @device.ioctl(I2C_SLAVE, address)
-#      @device.syswrite(data)
-      write(address, params)
+      write(address, *params)
       ret = @device.sysread(size)
       return ret
     end
@@ -55,7 +47,7 @@ module I2C
     private
     def initialize(device_path)
       @device = File.new(device_path, 'r+')
-      # here change the sys* functions of the file-object to met our requirements
+      # change the sys* functions of the file object to meet our requirements
       class << @device
         alias :syswrite_orig :syswrite
         def syswrite(var)
