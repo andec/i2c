@@ -22,7 +22,7 @@ LOW = 0
       
 module I2C
   module Drivers
-    class MCP17026
+    class MCP23017
       # Registers
       IODIRA = 0x00
       IODIRB = 0x01
@@ -30,7 +30,7 @@ module I2C
       GPIOB = 0x13
       
       # Creates an instance representing exactly one
-      # MCP17026 on one I2C-bus.
+      # MCP23017 on one I2C-bus.
       #
       # device: I2C-device file (usually /dev/i2c-0).
       #         Or an intantiated io class that supports

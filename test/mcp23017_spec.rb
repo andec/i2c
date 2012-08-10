@@ -1,8 +1,6 @@
 require 'i2c'
-#require 'mock/mock_i2c_io.rb'
 
 class MockI2CIO
-
   attr_reader :registers
   attr_reader :last_address
 
@@ -43,48 +41,48 @@ class MockI2CIO
   end
 end
 
-describe I2C::Drivers::MCP17026, "#mode?" do
+describe I2C::Drivers::MCP23017, "#mode?" do
   it "initially returns 1 for all pin modes" do
     io = MockI2CIO.new
-    mcp17026 = I2C::Drivers::MCP17026.new(io, 0x20)
+    mcp17026 = I2C::Drivers::MCP23017.new(io, 0x20)
     (0..15).each do |pin|
       mcp17026.mode?(pin).should eq(1)
     end
   end
 end
 
-describe I2C::Drivers::MCP17026, "#mode?" do
+describe I2C::Drivers::MCP23017, "#mode?" do
   it "returns what has been set through #mode" do
     io = MockI2CIO.new
-    mcp17026 = I2C::Drivers::MCP17026.new(io, 0x20)
+    mcp23017 = I2C::Drivers::MCP23017.new(io, 0x20)
     (0..500).each do |pin|
       pin = rand(16)
       mode = rand(2)
-      mcp17026.mode(pin, mode)
-      mcp17026.mode?(pin).should eq(mode)
+      mcp23017.mode(pin, mode)
+      mcp23017.mode?(pin).should eq(mode)
     end
   end
 end
 
-describe I2C::Drivers::MCP17026, "#[]" do
+describe I2C::Drivers::MCP23017, "#[]" do
   it "initially returns 0 for all I/O pins" do
     io = MockI2CIO.new
-    mcp17026 = I2C::Drivers::MCP17026.new(io, 0x20)
+    mcp23017 = I2C::Drivers::MCP23017.new(io, 0x20)
     (0..15).each do |pin|
-      mcp17026[pin].should eq(0)
+      mcp23017[pin].should eq(0)
     end
   end
 end
 
-describe I2C::Drivers::MCP17026, "#[]" do
+describe I2C::Drivers::MCP23017, "#[]" do
   it "returns what has been set through #[]=" do
     io = MockI2CIO.new
-    mcp17026 = I2C::Drivers::MCP17026.new(io, 0x20)
+    mcp23017 = I2C::Drivers::MCP23017.new(io, 0x20)
     (0..500).each do |pin|
       pin = rand(16)
       value = rand(2)
-      mcp17026[pin] = value
-      mcp17026[pin].should eq(value)
+      mcp23017[pin] = value
+      mcp23017[pin].should eq(value)
     end
   end
 end
