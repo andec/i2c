@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.files       = ["lib/i2c.rb", 
   		   "lib/i2c/i2c.rb", 
 		   "lib/i2c/backends/i2c-dev.rb", 
-  		   "lib/i2c/drivers/mcp17026.rb",
-		   "test//mcp230170_spec.rb",
+  		   "lib/i2c/drivers/mcp23017.rb",
+		   "test//mcp23017_spec.rb",
 		   "rules/88-i2c.rules"]
   s.extra_rdoc_files = ['README.rdoc']
   s.homepage    = 'https://github.com/andec/i2c'
