@@ -44,9 +44,9 @@ end
 describe I2C::Drivers::MCP23017, "#mode?" do
   it "initially returns 1 for all pin modes" do
     io = MockI2CIO.new
-    mcp17026 = I2C::Drivers::MCP23017.new(io, 0x20)
+    mcp23017 = I2C::Drivers::MCP23017.new(io, 0x20)
     (0..15).each do |pin|
-      mcp17026.mode?(pin).should eq(1)
+      mcp23017.mode?(pin).should eq(1)
     end
   end
 end
