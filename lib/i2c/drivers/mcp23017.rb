@@ -69,7 +69,7 @@ module I2C
       end
       
       def mode(pin, pin_mode)
-        raise ArgumentError, "Pin not 0-15" unless (0..16).include?(pin)
+        raise ArgumentError, "Pin not 0-15" unless (0..15).include?(pin)
         raise ArgumentError, 'invalid value' unless [0,1].include?(pin_mode)
         if 8 <= pin
           @dir_b = set_bit_value(@dir_b, (pin-8), pin_mode)
