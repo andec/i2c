@@ -41,19 +41,26 @@ first I2c bus on the system.
 
 === MCP23017
 
-16bit IO-Expander MCP23017 from Microchip. Provides a wiringpi-ruby compatible
+16 bit IO-Expander MCP23017 from Microchip. Provides a wiringpi-ruby compatible
 API and may therefore be used as a drop-in replacement for IO tasks on a
-Raspberry Pi. Datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
+Raspberry Pi. 
+Datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
+
+=== MCP23008
+
+8 bit IO-Expander MCP23008 from Microchip. Basically a small version of the 
+MCP23017. 
+Datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/21919e.pdf
 
 == Acknowledgements
 
 The low-level IO (mainly in i2c-dev.rb) was extracted from Ruby-I2C 
 (http://rubyforge.org/projects/i2c/) by Jonas Bähr <jonas.baehr@fs.ei.tum.de> 
 
-== Legal stuff
+== Copyright / Licence
 
 This code may be used under the terms of the GNU General Public Licence, Version 2.
 
 Copyright (c) 2012 Christoph Anderegg <christoph@christoph-anderegg.ch>
-Copyright (c) 2008 Jonas Bähr, jonas.baehr@fs.ei.tum.de 
+Copyright (c) 2008 Jonas Bähr <jonas.baehr@fs.ei.tum.de>
 
