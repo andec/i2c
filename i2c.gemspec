@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'i2c'
-  s.version     = '0.2.1'
-  s.date        = '2012-08-26'
+  s.version     = '0.2.22'
+  s.date        = '2013-04-15'
   s.summary     = "I2C access library (for Linux)."
   s.description = "Interface to I2C (aka TWI) implementations. Also provides abstractions for some I2c-devices. Created with the Raspberry Pi in mind."
   s.authors     = ["Christoph Anderegg"]
