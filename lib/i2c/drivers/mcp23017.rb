@@ -13,12 +13,12 @@
 require 'i2c/i2c.rb'
 
 # Constants for mode()
-INPUT = 1
-OUTPUT = 0
+INPUT = 1   unless defined?(INPUT)
+OUTPUT = 0  unless defined?(OUTPUT)
 
 # Constants for write()
-HIGH = 1
-LOW = 0
+HIGH = 1    unless defined?(HIGH)
+LOW = 0     unless defined?(LOW)
       
 module I2C
   module Drivers
