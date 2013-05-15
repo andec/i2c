@@ -57,6 +57,9 @@ Datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/21919e.pdf
 The low-level IO (mainly in i2c-dev.rb) was extracted from Ruby-I2C 
 (http://rubyforge.org/projects/i2c/) by Jonas Bähr <jonas.baehr@fs.ei.tum.de> 
 
+Bugfixes by
+ - Pierre Paques
+
 == Copyright / Licence
 
 This code may be used under the terms of the GNU General Public Licence, Version 2.
