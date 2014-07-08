@@ -44,10 +44,11 @@ module I2C
       return ret
     end
     
-    #Read a byte from the current address
+    # Read a byte from the current address. Return a one char String which
+    # can be treated with String#unpack
     def read_byte(address)
       ret=""
-      @device.ioctl(IC_SLAVE,address)
+      @device.ioctl(I2C_SLAVE,address)
       ret=@device.sysread(1)
       return ret
     end
