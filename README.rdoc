@@ -8,9 +8,9 @@ Raspberry Pi, but should work with any linux i2c-dev I2C-hardware.
 == Structure
 
 The library is split into two parts: 
- - A backend for accessing the I2C bus (right now only through the i2c-dev 
+* A backend for accessing the I2C bus (right now only through the i2c-dev 
    in Linux, other impementations are possible).
- - Drivers for I2C enabled ICs. 
+* Drivers for I2C enabled ICs. 
 
 == Installation
 
@@ -57,8 +57,11 @@ Datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/21919e.pdf
 The low-level IO (mainly in i2c-dev.rb) was extracted from Ruby-I2C 
 (http://rubyforge.org/projects/i2c/) by Jonas Bähr <jonas.baehr@fs.ei.tum.de> 
 
-Bugfixes by
- - Pierre Paques
+=== Contributions 
+* [Gaëtan Duchaussois](https://github.com/gaetronik) I2C::Dev.read_byte.
+
+=== Bugfixes
+* Pierre Paques
 
 == Copyright / Licence
 
