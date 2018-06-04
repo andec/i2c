@@ -39,7 +39,7 @@ module I2C
     # String#unpack afterwards
     def read(address, size, *params)
       ret = ""
-      write(address, *params)
+      write(address, *params) unless params == nil
       ret = @device.sysread(size)
       return ret
     end
@@ -62,7 +62,7 @@ module I2C
         def syswrite(var)
           begin
             syswrite_orig var
-          rescue Errno::EREMOTEIO
+          rescue Errno::EREMOTEIO, Errno::EIO
             raise AckError, "No acknowledge received"
           end
         end
@@ -70,7 +70,7 @@ module I2C
         def sysread(var)
           begin
             sysread_orig var
-          rescue Errno::EREMOTEIO
+          rescue Errno::EREMOTEIO, Errno::EIO
             raise AckError, "No acknowledge received"
           end
         end

@@ -53,7 +53,7 @@ module I2C
         
         @iodir = Array.new
         max_port_no.times { @iodir << 0xFF } # Direction is input initially
-        @device.write(@address, port_count, iodir[0], @iodir)
+        @device.write(@address, port_count, iodir[0], *@iodir)
         
         @data = Array.new
         max_port_no.times { @data << 0xFF }
