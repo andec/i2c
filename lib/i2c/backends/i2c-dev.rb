@@ -54,6 +54,27 @@ module I2C
     end
     
     private
+	 def setup_device(address)
+		 @device.ioctl(I2C_SLAVE, address);
+	 end
+
+	 def raw_read(size)
+		 return @device.sysread(size)
+	 end
+
+	 def raw_write(params)
+		 data = String.new();
+		 data.force_encoding("US-ASCII")
+
+		 if(params.is_a? Array)
+			 params.each do |i| data << i; end
+		 else
+			 data << params;
+		 end
+
+		 @device.syswrite(data);
+	 end
+
     def initialize(device_path)
       @device = File.new(device_path, 'r+')
       # change the sys* functions of the file object to meet our requirements
