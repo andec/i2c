@@ -18,24 +18,45 @@ module I2C
       @instances[device_path]
     end
 
-    # sends every param, begining with +params[0]+
+	 attr_reader :comsMutex
+
+	 # this tries to lock the coms mutex, unless already held,
+    # then sends every param, begining with +params[0]+
     # If the current param is a Fixnum, it is treated as one byte.
-    # If the param is a String, this string will be send byte by byte.
+    # If the param is a String, this string will be sent byte by byte.
     # You can use Array#pack to create a string from an array
-    # For Fixnum there is a convinient function to_short which transforms
+    # For Fixnum there is a convenient function to_short which transforms
     # the number to a string this way: 12345.to_short == [12345].pack("s")
     def write(address, *params)
+		if(@comsMutex.owned?)
+		 	keepLock = true;
+		else
+			@comsMutex.lock;
+		end
+
 		setup_device(address);
 		raw_write(params);
+
+		@comsMutex.unlock() unless keepLock;
     end
 
-    # this sends *params, if given, and then tries to read
+	 # this tries to lock the coms mutex (unless already held),
+    # then sends *params, if given, and then tries to read
     # +size+ bytes. The result is a String which can be treated with
     # String#unpack afterwards
     def read(address, size, *params)
+		 if(@comsMutex.owned?)
+			 keepLock = true;
+		 else
+			 @comsMutex.lock;
+		 end
+
 		setup_device(address);
 		raw_write(params) unless params.empty?
-		return raw_read(size);
+		result = raw_read(size);
+
+		@comsMutex.unlock() unless keepLock;
+		return result;
     end
 
     # Read a byte from the current address. Return a one char String which
@@ -56,7 +77,7 @@ module I2C
 	 end
 
 	 # Write "params" to @device, unrolling them first should they be an array.
-	 # params should be a string, formatted with Array.pack as explained for write() 
+	 # params should be a string, formatted with Array.pack as explained for write()
 	 def raw_write(params)
 		 data = String.new();
 		 data.force_encoding("US-ASCII")
@@ -71,6 +92,8 @@ module I2C
 	 end
 
     def initialize(device_path)
+		@comsMutex = Mutex.new();
+
       @device = File.new(device_path, 'r+')
       # change the sys* functions of the file object to meet our requirements
       class << @device
