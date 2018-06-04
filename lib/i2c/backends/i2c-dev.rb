@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# I2C - Linux i2c-dev backend. 
+# I2C - Linux i2c-dev backend.
 #
 # Copyright (c) 2012 Christoph Anderegg <christoph@christoph-anderegg.ch>
-# Copyright (c) 2008 Jonas Bähr, jonas.baehr@fs.ei.tum.de 
+# Copyright (c) 2008 Jonas Bähr, jonas.baehr@fs.ei.tum.de
 # This file may be distributed under the terms of the GNU General Public
 # License Version 2.
 #
@@ -25,34 +25,25 @@ module I2C
     # For Fixnum there is a convinient function to_short which transforms
     # the number to a string this way: 12345.to_short == [12345].pack("s")
     def write(address, *params)
-      data = String.new
-      data.force_encoding("US-ASCII")
-      params.each do |value|
-        data << value
-      end
-      @device.ioctl(I2C_SLAVE, address)
-      @device.syswrite(data)
+		setup_device(address);
+		raw_write(params);
     end
 
-    # this sends *params as the write function and then tries to read
+    # this sends *params, if given, and then tries to read
     # +size+ bytes. The result is a String which can be treated with
     # String#unpack afterwards
     def read(address, size, *params)
-      ret = ""
-      write(address, *params) unless params == nil
-      ret = @device.sysread(size)
-      return ret
+		setup_device(address);
+		raw_write(params) unless params.empty?
+		return raw_read(size);
     end
-    
+
     # Read a byte from the current address. Return a one char String which
     # can be treated with String#unpack
     def read_byte(address)
-      ret=""
-      @device.ioctl(I2C_SLAVE,address)
-      ret=@device.sysread(1)
-      return ret
+   	read(address, 1);
     end
-    
+
     private
 	 def setup_device(address)
 		 @device.ioctl(I2C_SLAVE, address);
