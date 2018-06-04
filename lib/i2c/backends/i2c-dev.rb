@@ -45,14 +45,18 @@ module I2C
     end
 
     private
+	 # Set up @device for a I2C communication to address
 	 def setup_device(address)
 		 @device.ioctl(I2C_SLAVE, address);
 	 end
 
+	 # Read size bytes from @device, if possible. Raise an error otherwise
 	 def raw_read(size)
 		 return @device.sysread(size)
 	 end
 
+	 # Write "params" to @device, unrolling them first should they be an array.
+	 # params should be a string, formatted with Array.pack as explained for write() 
 	 def raw_write(params)
 		 data = String.new();
 		 data.force_encoding("US-ASCII")
