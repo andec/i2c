@@ -34,10 +34,12 @@ module I2C
 			@comsMutex.lock;
 		end
 
-		setup_device(address);
-		raw_write(params);
-
-		@comsMutex.unlock() unless keepLock;
+		begin
+			setup_device(address);
+			raw_write(params);
+		ensure
+			@comsMutex.unlock() unless keepLock;
+		end
     end
 
 	 # this tries to lock the coms mutex (unless already held),
@@ -51,12 +53,14 @@ module I2C
 			 @comsMutex.lock;
 		 end
 
-		setup_device(address);
-		raw_write(params) unless params.empty?
-		result = raw_read(size);
-
-		@comsMutex.unlock() unless keepLock;
-		return result;
+		 begin
+			setup_device(address);
+			raw_write(params) unless params.empty?
+			result = raw_read(size);
+		ensure
+			@comsMutex.unlock() unless keepLock;
+			return result;
+		end
     end
 
     # Read a byte from the current address. Return a one char String which
